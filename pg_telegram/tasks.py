@@ -1,9 +1,11 @@
+import asyncio
 from collections import defaultdict
 
 from sanic.log import logger
 from telethon import TelegramClient, events
 
-from pubgate.db import User
+from pubgate.db import User, Outbox
+from pubgate.db.queries import aggregate_boxes
 from pubgate.activity import Create
 from pubgate.contrib.parsers import process_tags
 
@@ -54,4 +56,33 @@ async def run_tg_bot(app):
             logger.info(f"telegram entry '{event.message.id}' of {triggered_bot.name} federating")
 
     await client.start(bot_token=app.config.TELEGRAM_BOT_TOKEN)
+
+    while True:
+        for bot in active_bots.objects:
+            db_query = aggregate_boxes(
+                {"tg_sent": "$tg_sent",
+                 "user_id": "$user_id"}
+            )
+            db_query.append(
+                {'$match': {
+                    "deleted": False,
+                    "$or": [{"user_id": bot.name},
+                            {"users": {"$in": [bot.name]}}],
+                    "activity.type": "Create",
+                    "tg_sent": False
+                }},
+            )
+            new_entries = await Outbox.aggregate(db_query)
+            for entry in new_entries:
+                for b_channel in bot["details"]["tgbot"]["channels"]:
+                    await client.send_message(b_channel, entry.activity.object.content)
+
+                #TODO mark as sent to tg
+
+        await asyncio.sleep(app.config.CHECK_BOXES_TIMEOUT)
+
+
+
+
+
 
