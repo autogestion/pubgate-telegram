@@ -4,8 +4,7 @@ from collections import defaultdict
 from sanic.log import logger
 from telethon import TelegramClient, events
 
-from pubgate.db import User, Outbox
-from pubgate.db.queries import aggregate_boxes
+from pubgate.db import User, Outbox, Inbox
 from pubgate.activity import Create
 from pubgate.contrib.parsers import process_tags
 
@@ -51,7 +50,7 @@ async def run_tg_bot(app):
                     "tag": object_tags
                 }
             })
-            await activity.save()
+            await activity.save(tg_sent=True)
             await activity.deliver()
             logger.info(f"telegram entry '{event.message.id}' of {triggered_bot.name} federating")
 
@@ -59,30 +58,31 @@ async def run_tg_bot(app):
 
     while True:
         for bot in active_bots.objects:
-            db_query = aggregate_boxes(
-                {"tg_sent": "$tg_sent",
-                 "user_id": "$user_id"}
-            )
-            db_query.append(
-                {'$match': {
-                    "deleted": False,
-                    "$or": [{"user_id": bot.name},
-                            {"users": {"$in": [bot.name]}}],
-                    "activity.type": "Create",
-                    "tg_sent": False
-                }},
-            )
-            new_entries = await Outbox.aggregate(db_query)
-            for entry in new_entries:
-                for b_channel in bot["details"]["tgbot"]["channels"]:
-                    await client.send_message(b_channel, entry.activity.object.content)
+            inbox_messages = await Inbox.find(filter={
+                "deleted": False,
+                "users": {"$in": [bot.name]},
+                "activity.type": "Create",
+                "tg_sent": {'$ne': True}
+            })
+            await tg_send(client, bot, inbox_messages.objects, Inbox)
 
-                #TODO mark as sent to tg
+            outbox_messages = await Outbox.find(filter={
+                "deleted": False,
+                "user_id": bot.name,
+                "activity.type": "Create",
+                "tg_sent": {'$ne': True}
+            })
+            await tg_send(client, bot, outbox_messages.objects, Outbox)
 
         await asyncio.sleep(app.config.CHECK_BOXES_TIMEOUT)
 
 
-
-
-
+async def tg_send(client, bot, entries, box):
+    for entry in entries:
+        for b_channel in bot["details"]["tgbot"]["channels"]:
+            await client.send_message(b_channel, entry.activity['object']['content'])
+            await box.update_one(
+                {'_id': entry._id},
+                {'$set': {"tg_sent": True}}
+            )
 

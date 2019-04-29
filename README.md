@@ -1,7 +1,7 @@
 ## PubGate Telegram <-> ActivityPub bridge
 Extension for [PubGate](https://github.com/autogestion/pubgate), federates Telegram channels and back
 
-Requires PubGate >= 0.2.10
+Requires PubGate >= 0.2.9
 ### Run
  - Create Telegram bot and invite it to broadcasting channels
  - Install PubGate
