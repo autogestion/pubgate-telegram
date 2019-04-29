@@ -18,9 +18,10 @@ EXTENSIONS = [..., "pg_telegram"]
 # api_hash from https://my.telegram.org, under API Development.
 TELEGRAM_API_ID = 12345
 TELEGRAM_API_HASH = '0123456789abcdef0123456789abcdef'
+
 TELEGRAM_BOT_TOKEN = "get from https://core.telegram.org/bots#6-botfather"
 
-CHECK_BOXES_TIMEOUT = 300
+CHECK_BOXES_TIMEOUT = 3
 ```
  - run
 ```

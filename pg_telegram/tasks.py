@@ -14,7 +14,6 @@ async def run_tg_bot(app):
                             app.config.TELEGRAM_API_ID,
                             app.config.TELEGRAM_API_HASH
                             )
-
     bot_mapping = defaultdict(set)
     active_bots = await User.find(filter={"details.tgbot.enable": True})
     for bot in active_bots.objects:
@@ -79,8 +78,14 @@ async def run_tg_bot(app):
 
 async def tg_send(client, bot, entries, box):
     for entry in entries:
+        attachments = entry.activity['object'].get('attachment', [])
+        entities = [attachment['url'] for attachment in attachments]
+        content = entry.activity['object']['content']
+        if content:
+            entities.append(content)
         for b_channel in bot["details"]["tgbot"]["channels"]:
-            await client.send_message(b_channel, entry.activity['object']['content'])
+            for entity in entities:
+                await client.send_message(b_channel, entity)
             await box.update_one(
                 {'_id': entry._id},
                 {'$set': {"tg_sent": True}}
