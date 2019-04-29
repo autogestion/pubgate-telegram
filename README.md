@@ -1,7 +1,7 @@
-## PubGate Telegram -> ActivityPub bridge
-Extension for [PubGate](https://github.com/autogestion/pubgate), federates Telegram channels
+## PubGate Telegram <-> ActivityPub bridge
+Extension for [PubGate](https://github.com/autogestion/pubgate), federates Telegram channels and back
 
-Requires PubGate >= 0.2.9
+Requires PubGate >= 0.2.10
 ### Run
  - Create Telegram bot and invite it to broadcasting channels
  - Install PubGate
@@ -20,6 +20,8 @@ TELEGRAM_API_ID = 12345
 TELEGRAM_API_HASH = '0123456789abcdef0123456789abcdef'
 
 TELEGRAM_BOT_TOKEN = "get from https://core.telegram.org/bots#6-botfather"
+
+CHECK_BOXES_TIMEOUT = 3
 ```
  - run
 ```
@@ -61,7 +63,7 @@ payload
 }
 ```
 
-#####Restart app after adding new bot or updating old one
+##### Restart app after adding new bot or updating old one
 
 
 #### Disable/Update bot
