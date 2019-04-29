@@ -2,8 +2,9 @@ import asyncio
 from collections import defaultdict
 
 from sanic.log import logger
-from telethon import TelegramClient, events
+from telethon import TelegramClient, events, utils
 
+from pubgate import MEDIA
 from pubgate.db import User, Outbox, Inbox
 from pubgate.activity import Create
 from pubgate.contrib.parsers import process_tags
@@ -25,6 +26,19 @@ async def run_tg_bot(app):
         content = event.message.text
         published = event.message.date.replace(microsecond=0).isoformat() + "Z"
 
+        attachment = []
+        if event.message.photo:
+            photo_id = f'{bot.name}/{event.message.photo.id}.jpg'
+            photo_path = f'{MEDIA}/{photo_id}'
+            photo_url = f'{app.base_url}/media/{photo_id}'
+            await client.download_media(event.message, photo_path)
+            attachment = [{
+                "type": "Document",
+                "mediaType": "image/jpeg",
+                "url": photo_url,
+                "name": "null"
+            }]
+
         for triggered_bot in bot_mapping[event.chat.username]:
             # process tags
             extra_tag_list = []
@@ -45,7 +59,7 @@ async def run_tg_bot(app):
                     "sensitive": False,
                     "content": body,
                     "published": published,
-                    "attachment": [],
+                    "attachment": attachment,
                     "tag": object_tags
                 }
             })
