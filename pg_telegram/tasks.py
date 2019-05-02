@@ -92,14 +92,13 @@ async def run_tg_bot(app):
 
 async def tg_send(client, bot, entries, box):
     for entry in entries:
-        attachments = entry.activity['object'].get('attachment', [])
-        entities = [attachment['url'] for attachment in attachments]
-        content = entry.activity['object']['content']
-        if content:
-            entities.append(content)
+        # url of original entry is sufficient if we do link_preview
+        url = entry.activity['object']['url']
+        entities = []
+        if url:
+            entities.append(url)
         for b_channel in bot["details"]["tgbot"]["channels"]:
             for entity in entities:
-                await client.send_message(b_channel, entity)
                 await client.send_message(b_channel, entity, parse_mode='html', link_preview=True)
             await box.update_one(
                 {'_id': entry._id},
