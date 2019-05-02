@@ -100,6 +100,7 @@ async def tg_send(client, bot, entries, box):
         for b_channel in bot["details"]["tgbot"]["channels"]:
             for entity in entities:
                 await client.send_message(b_channel, entity)
+                await client.send_message(b_channel, entity, parse_mode='html', link_preview=True)
             await box.update_one(
                 {'_id': entry._id},
                 {'$set': {"tg_sent": True}}
