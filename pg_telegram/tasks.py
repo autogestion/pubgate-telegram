@@ -2,7 +2,8 @@ import asyncio
 from collections import defaultdict
 
 from sanic.log import logger
-from telethon import TelegramClient, events, utils
+from telethon import TelegramClient, events
+from markdown import markdown
 
 from pubgate import MEDIA
 from pubgate.db import User, Outbox, Inbox
@@ -23,29 +24,25 @@ async def run_tg_bot(app):
 
     @client.on(events.NewMessage(chats=tuple(bot_mapping.keys())))
     async def normal_handler(event):
-        content = event.message.text
+        content = markdown(event.message.text)
         published = event.message.date.replace(microsecond=0).isoformat() + "Z"
 
         attachment = []
         if event.message.photo:
             photo_id = f'{bot.name}/{event.message.photo.id}.jpg'
-            photo_path = f'{MEDIA}/{photo_id}'
-            photo_url = f'{app.base_url}/media/{photo_id}'
-            await client.download_media(event.message, photo_path)
+            await client.download_media(event.message, f'{MEDIA}/{photo_id}')
             attachment = [{
                 "type": "Document",
                 "mediaType": "image/jpeg",
-                "url": photo_url,
+                "url": f'{app.base_url}/media/{photo_id}',
                 "name": "null"
             }]
 
         for triggered_bot in bot_mapping[event.chat.username]:
             # process tags
             extra_tag_list = []
-            # collect hardcoded tags from config
             if triggered_bot["details"]["tgbot"]["tags"]:
                 extra_tag_list.extend(triggered_bot["details"]["tgbot"]["tags"])
-
             content, footer_tags, object_tags = process_tags(extra_tag_list, content)
             body = f"{content}{footer_tags}"
 
@@ -93,15 +90,15 @@ async def run_tg_bot(app):
 async def tg_send(client, bot, entries, box):
     for entry in entries:
         # url of original entry is sufficient if we do link_preview
-        url = entry.activity['object']['url']
-        entities = []
+        # more on message formatting https://github.com/autogestion/pubgate-telegram/pull/3
+        url = entry.activity['object'].get('url') or entry.activity['object'].get('id')
         if url:
-            entities.append(url)
-        for b_channel in bot["details"]["tgbot"]["channels"]:
-            for entity in entities:
-                await client.send_message(b_channel, entity, parse_mode='html', link_preview=True)
-            await box.update_one(
-                {'_id': entry._id},
-                {'$set': {"tg_sent": True}}
-            )
-
+            for b_channel in bot["details"]["tgbot"]["channels"]:
+                await client.send_message(b_channel, url,
+                                          parse_mode='html',
+                                          link_preview=True)
+        # TODO fix issue when more then 1 bot recieved same object in inbox
+        await box.update_one(
+            {'_id': entry._id},
+            {'$set': {"tg_sent": True}}
+        )

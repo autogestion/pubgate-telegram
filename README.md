@@ -45,7 +45,7 @@ payload
 	"invite": "xyz",                                               #required if register by invite enabled
 	"profile": {
 		"type": "Service",
-		"preferredUsername": "TelePub",
+		"name": "TelePub",
 		"summary": "Broadcast from <a href='https://t.me/telapub' target='_blank'>Telegram channel",
 	    "icon": {
 	        "type": "Image",
