@@ -39,27 +39,27 @@ python run_api.py
 payload
 ```
 {
-	"username": "user",
-	"password": "pass",
-	"email": "admin@mail.com",                                     #optional
-	"invite": "xyz",                                               #required if register by invite enabled
-	"profile": {
-		"type": "Service",
-		"name": "TelePub",
-		"summary": "Broadcast from <a href='https://t.me/telapub' target='_blank'>Telegram channel",
-	    "icon": {
-	        "type": "Image",
-	        "mediaType": "image/png",
-	        "url": "https://cdn1.iconfinder.com/data/icons/blockchain-8/48/icon0008_decentralize-512.png"
-	    }
-	}
-	"details": {
-		"tgbot": {
-			"channels": ["telapub"],
-			"enable": true,
-			"tags": ["telegram", "bridge"]                                #could be empty []
-		}
-	}
+    "username": "user",
+    "password": "pass",
+    "email": "admin@mail.com",                                          #optional
+    "invite": "xyz",                                                    #required if register by invite enabled
+    "profile": {
+    "type": "Service",
+    "name": "TelePub",
+    "summary": "Broadcast from <a href='https://t.me/telapub' target='_blank'>Telegram channel</a>",
+        "icon": {
+            "type": "Image",
+            "mediaType": "image/png",
+            "url": "https://cdn1.iconfinder.com/data/icons/blockchain-8/48/icon0008_decentralize-512.png"
+        }
+    },
+    "details": {
+        "tgbot": {
+            "channels": ["telapub"],
+            "enable": true,
+            "tags": ["telegram", "bridge"]                              #could be empty []
+    }
+    }
 }
 ```
 
@@ -77,7 +77,7 @@ payload
         "tgbot": {
             "channels": ["telapub"],                                      #change to update channel's list
             "enable": false,                                              #"enable": true to re-enable
-			"tags": ["telegram", "bridge"]                                 #could be empty []
+            "tags": ["telegram", "bridge"]                                 #could be empty []
         }
     }
 }
