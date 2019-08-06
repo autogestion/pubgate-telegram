@@ -32,6 +32,8 @@ python run_api.py
 
 ### Usage
 
+Create PubGate User(PGU) which will represent Telegram bot via Postman using paylod described below:
+
 #### Create bot
 ```
 /user  POST
@@ -64,6 +66,9 @@ payload
 ```
 
 ##### Restart app after adding new bot or updating old one
+
+- To get updates from Telegram channels (where Telegram bot was added) just follow PGU from other any other instance
+- To send updates to Telegram, make PGU follow acounts from other instances (Endpoint and payload described in postman colletion in [Pubgate repo](https://github.com/autogestion/pubgate/blob/master/pubgate.postman_collection.json)
 
 
 #### Disable/Update bot
