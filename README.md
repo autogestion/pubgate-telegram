@@ -23,7 +23,7 @@ CHECK_BOXES_TIMEOUT = 3
 This will connect Telegram bot to PubGate server. To connect it to Fediverse, setup PubGate AP account.
 Account could be created on deploy by adding next value to config/conf.cfg or later via API (described below)
 ```
-USER_ON_DEPLOY = {
+USER_ON_DEPLOY = """{
     "username": "user",
     "password": "pass",
     "email": "admin@mail.com",                                          #optional    
@@ -44,7 +44,7 @@ USER_ON_DEPLOY = {
             "tags": ["telegram", "bridge"]                              #could be empty []
         }
     }
-}
+}"""
 ```
 ##### Edit requirements/extensions.txt by adding next row
 ```
