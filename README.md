@@ -62,8 +62,8 @@ domain=put-your-domain-here.com docker-compose up -d
 
 ### Usage
 
-- To get updates from Telegram channels (where Telegram bot was added) just follow PubGate account from any other instance
-- To send updates to Telegram, make PubGate account follow accounts from other instances (via UI or API, endpoint and payload are described in postman collection in [Pubgate repo](https://github.com/autogestion/pubgate/blob/master/pubgate.postman_collection.json)
+- To get updates from Telegram channels (where Telegram bot was added) just follow PubGate account from any other AP account
+- To send updates to Telegram, make PubGate account follow targeted accounts (regular AP Follow, via UI or API, endpoint and payload are described in postman collection in [Pubgate repo](https://github.com/autogestion/pubgate/blob/master/pubgate.postman_collection.json)
 
 #### Bots Creation via API
 ```
