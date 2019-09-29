@@ -26,9 +26,9 @@ Account could be created on deploy by adding next value to config/conf.cfg or la
 USER_ON_DEPLOY = """{
     "username": "user",
     "password": "pass",
-    "email": "admin@mail.com",                                          #optional    
+    "email": "admin@mail.com",                                              
     "profile": {
-        "type": "Service",                                              #could be set as "Person"    
+        "type": "Service",                                                  
         "name": "TelePub",
         "summary": "Broadcast from <a href='https://t.me/telapub' target='_blank'>Telegram channel</a>",
         "icon": {
@@ -39,9 +39,9 @@ USER_ON_DEPLOY = """{
     },
     "details": {
         "tgbot": {
-            "channels": ["telapub"],                                    #list of channel names, as they defined in Telegram
+            "channels": ["telapub"],                                    
             "enable": true,
-            "tags": ["telegram", "bridge"]                              #could be empty []
+            "tags": ["telegram", "bridge"]                              
         }
     }
 }"""
