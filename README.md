@@ -25,8 +25,7 @@ Account could be created on deploy by adding next value to config/conf.cfg or la
 ```
 USER_ON_DEPLOY = """{
     "username": "user",
-    "password": "pass",
-    "email": "admin@mail.com",                                              
+    "password": "pass",                                 
     "profile": {
         "type": "Service",                                                  
         "name": "TelePub",
@@ -39,13 +38,18 @@ USER_ON_DEPLOY = """{
     },
     "details": {
         "tgbot": {
-            "channels": ["telapub"],                                    
+            "channels": ["<username_of_telegram_channel>"],                                    
             "enable": true,
             "tags": ["telegram", "bridge"]                              
         }
     }
 }"""
 ```
+More on user configuration
+ - profile -  contains information which will represent bridge in Fediverse
+ - details.tgbot.channels - should be updated with targeted Telegram channel(s)
+ - details.tgbot.tags - tags which will be auto-added to every post, could be []
+
 ##### Edit requirements/extensions.txt by adding next row
 ```
 git+https://github.com/autogestion/pubgate-telegram.git
@@ -61,14 +65,15 @@ domain=put-your-domain-here.com docker-compose up -d
 - To get updates from Telegram channels (where Telegram bot was added) just follow PubGate account from any other instance
 - To send updates to Telegram, make PubGate account follow accounts from other instances (via UI or API, endpoint and payload are described in postman collection in [Pubgate repo](https://github.com/autogestion/pubgate/blob/master/pubgate.postman_collection.json)
 
-#### Bot Creation via API
+#### Bots Creation via API
 ```
 /user  POST
 ```
 payload 
 ```
-Same as used for USER_ON_DEPLOY value, comments should be stripped
+Same as used for USER_ON_DEPLOY value, triple quotes should be stripped
 ```
+If register by invite enabled, "invite": "<invite_code_from_config/conf.cfg>" should be added to payload
 
 ##### Restart app after adding new bot or updating old one
 
@@ -81,9 +86,9 @@ payload
 {
     "details": {
         "tgbot": {
-            "channels": ["telapub"],                                      #change to update channel's list
-            "enable": false,                                              #"enable": true to re-enable
-            "tags": ["telegram", "bridge"]                                 #could be empty []
+            "channels": ["telapub"],                                    #change to update channel's list
+            "enable": false,                                            #"enable": true to re-enable
+            "tags": ["telegram", "bridge"]                              
         }
     }
 }
