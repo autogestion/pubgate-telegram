@@ -3,7 +3,7 @@ Extension for [PubGate](https://github.com/autogestion/pubgate), federates Teleg
                             
 Requires PubGate >= 0.2.19
 ## Deploy
-Create Telegram bot and invite it to channels going to be bridged
+Create Telegram bot and invite it to channels going to be bridged with admin permissions
 ###### Install Docker + Docker Compose
 #### Shell
 ```

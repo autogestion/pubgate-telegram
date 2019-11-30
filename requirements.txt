@@ -1,2 +1,2 @@
-telethon==1.6.2
+telethon==1.10.8
 Markdown==3.1
